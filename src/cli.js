@@ -72,14 +72,27 @@ async function createProject() {
     questions.push({
         type: 'input',
         name: 'beatmap_path',
-        message: 'What is the path to your osu beatmap file?',
+        message: 'What is the path to your osu beatmap folder?',
         default: 'C:/.../beatmap/map.osu'
     });
 
     const answers = await inquirer.prompt(questions);
+
+    if (fs.existsSync(`./${answers.name}/`)) {
+        console.log(`ERROR: Project ${answers.name} already exist.`);
+        return;
+    }
+
+    try {
+        fs.openSync(answers.beatmap_path);
+    } catch (error) {
+        console.log("ERROR: Beatmap file not valid.");
+        throw error;
+    }
+
+    const { exec } = require("child_process");
     const process = require("process");
     const ncp = require('ncp').ncp;
-    const { exec } = require("child_process");
 
     let currentFileUrl = import.meta.url;
     const isWindows = require('is-windows');
@@ -90,7 +103,7 @@ async function createProject() {
 
 
     const templateDirectory = path.resolve(
-        new URL(currentFileUrl).pathname, `../../templates/${answers.component ? "base_component" : "base"}`.replace("C:\\C", "C")
+        new URL(currentFileUrl).pathname, `../../templates/${answers.component ? "base_component" : "base"}`
     );
 
     // INSTALL
@@ -132,6 +145,21 @@ async function createProject() {
                 return;
             }
         });
+
+        console.log(`Updating osbx to latest...`);
+        exec("npm install osbx@latest", (error, stdout, stderr) => {
+            if (error) {
+                console.log(`error: ${error.message}`);
+                return;
+            }
+            if (stderr) {
+                console.log(`stderr: ${stderr}`);
+                return;
+            }
+        });
+
+        console.log(`Generating .gitignore file...`);
+        fs.writeFileSync('./.gitignore', `node_modules/\nplugins\npackage-lock.json\ntsconfig.json`);
         console.log(`Project have been initialized in ./${answers.name}! use npm run storyboard to generate osb file!`);
     });
 }
