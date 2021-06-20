@@ -159,7 +159,7 @@ async function createProject() {
         });
 
         console.log(`Generating .gitignore file...`);
-        fs.writeFileSync('./.gitignore', `node_modules/\nplugins\npackage-lock.json\ntsconfig.json`);
+        fs.writeFileSync('./.gitignore', `node_modules/\nplugins\npackage-lock.json\ntsconfig.json\npackage.json`);
         console.log(`Project have been initialized in ./${answers.name}! use npm run storyboard to generate osb file!`);
     });
 }
