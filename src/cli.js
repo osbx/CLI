@@ -121,7 +121,7 @@ async function createProject() {
             main: "storyboard.ts",
             dependencies: {
                 "@types/node": "^15.12.2",
-                "osbx": "^1.0.1",
+                "osbx": "^1.2.0",
                 "typescript": "^4.3.2"
             },
             scripts: {
