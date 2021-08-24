@@ -48,7 +48,7 @@ async function createProject() {
     questions.push({
         type: 'input',
         name: 'name',
-        message: 'What the name of your project?',
+        message: 'What is the name of your project?',
         default: 'osbx-project'
     });
 
